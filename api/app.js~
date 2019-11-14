@@ -1,0 +1,120 @@
+const CallHelper=require('./helper');
+const express =require("express");
+const app = express();
+const bodyParser = require('body-parser');
+const requestIp = require('request-ip');
+const connectionHelper = new CallHelper();
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.post("/getuserbyid", (req, res, next) => {
+	clientIp = requestIp.getClientIp(req);
+        console.log('body: ',req.body);
+	console.log('IP: '+clientIp);
+        payload=req.body;//search by all parameters given in
+	connectionHelper.getuserbyid(payload,res);
+    });
+
+app.post("/getuser", (req, res, next) => {
+	clientIp = requestIp.getClientIp(req);
+	console.log('body: ',req.body);
+        console.log('IP: '+clientIp);
+	payload=req.body;
+	connectionHelper.getuser(payload,res);
+    });
+
+app.post("/makeuser", (req, res, next) => {
+        clientIp = requestIp.getClientIp(req);
+        console.log('body: ',req.body);
+        console.log('IP: '+clientIp);
+        payload=req.body;
+        connectionHelper.makeuser(payload,res);
+    });
+
+app.post("/addbottletouser", (req, res, next) => {
+        clientIp = requestIp.getClientIp(req);
+        console.log('body: ',req.body);
+        console.log('IP: '+clientIp);
+        payload=req.body;
+        connectionHelper.addbottletouser(payload,res);
+    });
+
+app.post("/removebottletouser", (req, res, next) => {
+	clientIp = requestIp.getClientIp(req);
+	console.log('body: ',req.body);
+	console.log('IP: '+clientIp);
+	payload=req.body;
+	connectionHelper.removebottletouser(payload,res);
+    });
+
+app.post("/deleteuser", (req, res, next) => {
+        clientIp = requestIp.getClientIp(req);
+        console.log('body: ',req.body);
+        console.log('IP: '+clientIp);
+        payload=req.body;
+        connectionHelper.deleteuser(payload,res);
+    });
+
+app.post("/updatefilltouser", (req, res, next) => {
+        clientIp = requestIp.getClientIp(req);
+        console.log('body: ',req.body);
+        console.log('IP: '+clientIp);
+        payload=req.body;
+        connectionHelper.updatefilltouser(payload,res);
+    });
+
+app.post("/addfavoritetouser", (req, res, next) => {
+        clientIp = requestIp.getClientIp(req);
+        console.log('body: ',req.body);
+        console.log('IP: '+clientIp);
+        payload=req.body;
+        connectionHelper.addfavoritetouser(payload,res);
+    });
+
+app.post("/removefavoritetouser", (req, res, next) => {
+	clientIp = requestIp.getClientIp(req);
+	console.log('body: ',req.body);
+	console.log('IP: '+clientIp);
+	payload=req.body;
+	connectionHelper.removefacoritetouser(payload,res);
+    });
+
+app.post("/addfriendtouser", (req, res, next) => {
+	clientIp = requestIp.getClientIp(req);
+	console.log('body: ',req.body);
+	console.log('IP: '+clientIp);
+	payload=req.body;
+	connectionHelper.addfriendtouser(payload,res);
+    });
+
+app.post("/removefriendtouser", (req, res, next) => {
+	clientIp = requestIp.getClientIp(req);
+	console.log('body: ',req.body);
+	console.log('IP: '+clientIp);
+	payload=req.body;
+	connectionHelper.removefriendtouser(payload,res);
+    });
+
+app.post("/changeuseremail", (req, res, next) => {
+	clientIp = requestIp.getClientIp(req);
+	console.log('body: ',req.body);
+	console.log('IP: '+clientIp);
+	payload=req.body;
+	connectionHelper.changeuseremail(payload,res);
+    });
+
+app.post("/changeuseraddress", (req, res, next) => {
+	clientIp = requestIp.getClientIp(req);
+	console.log('body: ',req.body);
+	console.log('IP: '+clientIp);
+	payload=req.body;
+	connectionHelper.changeuseraddress(payload,res);
+    });
+
+const url = "mongodb://localhost:27017/";
+
+app.listen(3000,() =>{
+        console.log("Server running on port 3000");
+        ///////////////////////////////
+    });
