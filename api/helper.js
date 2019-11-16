@@ -19,8 +19,9 @@ class CallHelper{
 		    res.json(result);
 		});
 	}catch(e){
+	    var errorstring=null;
 	    console.log('Failed to get user');
-	    return e;
+	    return errorstring;
 	}
     }
 
