@@ -298,7 +298,7 @@ class CallHelper{
 		    console.log("BOTTLE'S ID: " + result.insertedId);
 		    console.log(typeof(result.insertedId));
 		    bottle_id=result.insertedId;
-		    dbo.collection("user").updateOne({"_id":searchId},{"$push":{"bottle_id":bottle_id}},function(err, result){
+		    dbo.collection("user").updateOne({"_id":searchId},{"$set":{"bottle_id":bottle_id}},function(err, result){
 			    if (err) throw err;
 			    res.json("Your new bottle was added. It is: "+bottle_id);
 			});
