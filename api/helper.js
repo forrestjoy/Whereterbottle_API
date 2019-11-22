@@ -58,7 +58,7 @@ class CallHelper{
 	    var lname=payload.last_name;
 	    var email=payload.email;
 	    var address=payload.address;
-	    var myobj={"first_name":fname,"last_name":lname,"bottle_id":[],"last_fill":"","favorites":[],"friends":[],"email":email,"address":address};
+	    var myobj={"first_name":fname,"last_name":lname,"bottle_id":"","last_fill":"","favorites":[],"friends":[],"email":email,"address":address};
 	    dbo.collection("user").insertOne(myobj, function(err, result) {
 		    if (err) throw err;
 		    console.log(result.insertedId);
