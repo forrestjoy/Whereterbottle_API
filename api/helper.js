@@ -14,7 +14,25 @@ class CallHelper{
             let dba=await DbConnection.Get();//Check connection status & return singleton connection instance from server to D
             var dbo=dba.db("where");//Establish the DB being used
 	    //Search user collection for document matching information passed in the payload. If found send the result in json format back to the IP where th
+	    var searchId=ObjectId(payload._id);
 	    dbo.collection("user").find(payload).toArray(function(err, result){
+		    if (err) throw err;
+		    res.json(result);
+		});
+	}catch(e){
+	    var errorstring=null;
+	    console.log('Failed to get user');
+	    return errorstring;
+	}
+    }
+    /////
+    async getuserbyid(payload,res){
+        try{
+            let dba=await DbConnection.Get();//Check connection status & return singleton connection instance from server to D
+            var dbo=dba.db("where");//Establish the DB being used
+	    //Search user collection for document matching information passed in the payload. If found send the result in json format back to the IP where th
+	    var searchId={"_id":ObjectId(payload._id)};
+	    dbo.collection("user").findOne(searchId).toArray(function(err, result){
 		    if (err) throw err;
 		    res.json(result);
 		});
@@ -40,7 +58,7 @@ class CallHelper{
 	    var lname=payload.last_name;
 	    var email=payload.email;
 	    var address=payload.address;
-	    var myobj={"first_name":fname,"last_name":lname,"bottle_id":[""],"last_fill":"","favorites":[""],"friends":[""],"email":email,"address":address};
+	    var myobj={"first_name":fname,"last_name":lname,"bottle_id":[],"last_fill":"","favorites":[],"friends":[],"email":email,"address":address};
 	    dbo.collection("user").insertOne(myobj, function(err, result) {
 		    if (err) throw err;
 		    console.log(result.insertedId);
@@ -59,27 +77,41 @@ class CallHelper{
     async  deleteuser(payload,res){
         try{
             let dba=await DbConnection.Get();
-            var dbo=dba.db("where");
-	    var address=payload.address;
-	    var myobj={"_id":ObjectId(payload._id)};
-	    dbo.collection("user").deleteOne(myobj, function(err, obj) {
-		    if (err) throw err;
-		    console.log("1 document deleted");
-		    res.json('Account Successfully Deleted');
-		});
-        }catch(e){
+            var dbo=dba.db("where"),
+		address=payload.address,
+		myobj={"_id":ObjectId(payload._id)},
+		tempuser;
+		dbo.collection("user").findOne(myobj,function(err, result){
+			if (err) throw err;
+			//res.json(result);
+			tempuser=result;
+			tempuser.bottle_id.forEach(bottle_id => {
+				var tempobj={"_id":ObjectId(bottle_id)};
+				dbo.collection("bottle").deleteOne(tempobj, function(err, obj) {
+					if (err) throw err;
+					console.log("1 Bottle deleted");
+				    });
+				//console.log("BOTTLE ID TYPE : ",typeof(String(bottle_id)));
+			    });
+			dbo.collection("user").deleteOne(myobj, function(err, obj){
+				if (err) throw err;
+				console.log("1 document deleted");
+				res.json('Account Successfully Deleted');
+			    });
+		    });
+	}catch(e){
             console.log('failed to delete user');
             console.log(e);
             return e;
-        }
+	}
     }
-    /////
+		    /////
     async getuserbyid(payload,res){
-        try{
-            let dba=await DbConnection.Get();
-            var dbo=dba.db("where");
-            var address=payload.address;
-            var myobj={"_id":ObjectId(payload._id)};
+	try{
+	    let dba=await DbConnection.Get();
+	    var dbo=dba.db("where");
+	    var address=payload.address;
+	    var myobj={"_id":ObjectId(payload._id)};
 	    dbo.collection("user").find(myobj).toArray(function(err, result){
                     if (err) throw err;
                     res.json(result);
@@ -91,59 +123,48 @@ class CallHelper{
         }
     }
     /////
-    async addbottletouser(payload,res){
-        try{
-            let dba=await DbConnection.Get();//Check connection status & returnsingleton connection instance from server to D
-	    var dbo=dba.db("where");//Establish the DB being used
-	    //Search user collection for document matching information passed in the payload. If found send the result in json format back to the IP where th
-	    var searchId=ObjectId(payload._id);
-	    var bottle_id = payload.bottle_id;
-	    dbo.collection("user").updateOne({"_id":searchId},{"$push":{"bottle":bottle_id}},function(err, result){
-		    if (err) throw err;
-		    res.json("Your new friend was added. It is: "+bottle_id);
-		});
-        }catch(e){
-            console.log('Failed to get user');
-            return e;
-        }
-    }
+     /////+++++++++++++++++++++++++++++++++++++++++
+    /////
+    /*
     async removebottletouser(payload,res){
         try{
-            let dba=await DbConnection.Get();//Check connection status & returnsingleton connection instance from server to D
-	    var dbo=dba.db("where");//Establish the DB being used               
-	    //Search user collection for document matching information passed in the payload. If found send the result in json format back to the IP where th  
-	    var searchId=ObjectId(payload._id);
-	    var bottle_id = payload.bottle_id;
-	    dbo.collection("user").updateOne({"_id":searchId},{"$pull":{"bottle":bottle_id}},function(err, result){
-		    if (err) throw err;
-		    res.json("Your bottle was removed: "+bottle_id);
-		});
-        }catch(e){
-            console.log('Failed to delete bottle');
-            return e;
-        }
-    }
-    /////
-
-    async addfriendtouser(payload,res){
-        try{
-            let dba=await DbConnection.Get();//Check connection status & return singleton connection instance from servSer to 
+            let dba=await DbConnection.Get();//Check connection status & return singleton connection instance from servSer to
 	    var dbo=dba.db("where");//Establish the DB being used
-	    //Search user collection for document matching information passed in the payload.If found send the result in json format back to the IP where t
+            //Search user collection for document matching information passed in the payload.If found send the result in json format back to the hert
 	    var searchId=ObjectId(payload._id);
-	    var friend_id = payload.friend_id;
-	    dbo.collection("user").updateOne({"_id":searchId},{"$push":{"friends":friend_id}},function(err, result){
-		    if (err) throw err;
-		    res.json("Your new friend was added. It is: "+friend_id);
-		});
-        }catch(e){
-            console.log('Failed to get user');
-            return e;
-        }
-    }
+	    var b_id = payload.bottle_id;
+	    console.log(typeof(b_id));
+	    dbo.collection("user").updateOne({"_id":searchId},{"$pull":{"bottle_id":b_id},function(err, result){
+			if (err) throw err;
+			res.json("Your bottle was removed. It is: "+bottle_id);
+		    });
+		}catch(e){
+		console.log('Failed to get user');
+		return e;
+	    }
+	}
+    */
     /////
-    async removefriendtouser(payload,res){
-        try{
+	/////+++++++++++++++++++++++++++++++++++++++++
+	async addfriendtouser(payload,res){
+	    try{
+		let dba=await DbConnection.Get();//Check connection status & return singleton connection instance from servSer to 
+		var dbo=dba.db("where");//Establish the DB being used
+		//Search user collection for document matching information passed in the payload.If found send the result in json format back to the IP where t
+		var searchId=ObjectId(payload._id);
+		var friend_id = payload.friend_id;
+		dbo.collection("user").updateOne({"_id":searchId},{"$push":{"friends":friend_id}},function(err, result){
+			if (err) throw err;
+			res.json("Your new friend was added. It is: "+friend_id);
+		    });
+	    }catch(e){
+		console.log('Failed to get user');
+		return e;
+	    }
+	}
+	/////
+	async removefriendtouser(payload,res){
+	    try{
             let dba=await DbConnection.Get();//Check connection status & return singleton connection instance from servSer to
 	    var dbo=dba.db("where");//Establish the DB being used
             //Search user collection for document matching information passed in the payload.If found send the result in json format back to the hert
@@ -151,7 +172,8 @@ class CallHelper{
 	    var friend_id = payload.friend_id;
 	    dbo.collection("user").updateOne({"_id":searchId},{"$pull":{"friends":friend_id}},function(err, result){
 		    if (err) throw err;
-		    res.json("Your new friend was removed. It is: "+friend_id);
+		    //res.json("Your new friend was removed. It is: "+friend_id);
+		    res.json(result);
 		});
         }catch(e){
             console.log('Failed to get user');
@@ -225,21 +247,61 @@ class CallHelper{
     }
     */
     /////
+    async changeuseremail(payload,res){
+        try{
+            let dba=await DbConnection.Get();//Check connection status & return singleton connection instance from server to D
+	    var dbo=dba.db("where");//Establish the DB being used               
+	    //Search user collection for document matching information passed in the payload. If found send the result in json format back to the IP where t
+	    var searchId=ObjectId(payload._id);
+	    var email = payload.email;
+	    dbo.collection("user").updateOne({"_id":searchId},{$set:{"email":email}},function(err, result){
+		    if (err) throw err;
+		    res.json("Email updated. New email: "+email);
+		});
+        }catch(e){
+            console.log('Failed to update email');
+            return e;
+        }
+    }    
+    /////
+
+    ////////*************************
+    /*
+      BOTTLE HELPER FUNCTIONS: QUERY THE BOTTLE COLLECTION WITHIN THE MONGODB
+    */
+    ////////*************************
+
+
+    /////
+
     async makebottle(payload,res){
+	var bottle_id;
         try{
             ////
 	    let dba=await DbConnection.Get();
             var dbo=dba.db("where");
+	    ////
+	    var tempbottle;
+	    var dat=new Date();
+	    var date = dat.getFullYear()+'-'+(dat.getMonth()+1)+'-'+dat.getDate();
+	    ////
 	    var size=payload.size;
 	    var total_refills=0;
+	    var last_refill_day=date;
 	    var day_refills=0;
 	    var x_coord="";
 	    var y_coord="";
-	    var myobj={};
-	    dbo.collection("bottle").insertOne(myobj, function(err, result) {
+	    var myobj={"size":size,"total_refills":total_refills,"last_refill_day":date,"day_refills":day_refills,"x_coord":x_coord,"y_coord":y_coord};
+	    var searchId=ObjectId(payload._id);
+	    var temp=await dbo.collection("bottle").insertOne(myobj, function(err, result) {
 		    if (err) throw err;
-		    console.log(result.insertedId);
-		    res.json(result.insertedId);
+		    console.log("BOTTLE'S ID: " + result.insertedId);
+		    console.log(typeof(result.insertedId));
+		    bottle_id=result.insertedId;
+		    dbo.collection("user").updateOne({"_id":searchId},{"$push":{"bottle_id":bottle_id}},function(err, result){
+			    if (err) throw err;
+			    res.json("Your new bottle was added. It is: "+bottle_id);
+			});
 		});
 	    ////
         }catch(e){
@@ -248,11 +310,95 @@ class CallHelper{
 	}
     }
     /////
+    /////
+    async  deletebottle(payload,res){
+        try{
+            let dba=await DbConnection.Get();
+            var dbo=dba.db("where");
+	    var address=payload.address;
+	    var myobj={"_id":ObjectId(payload._id)};
 
+	    dbo.collection("bottle").deleteOne(myobj, function(err, obj) {
+		    if (err) throw err;
+		    console.log("1 document deleted");
+		    res.json('Account Successfully Deleted');
 
-
-
-
+		});
+        }catch(e){
+            console.log('failed to delete bottle');
+            console.log(e);
+            return e;
+        }
+    }
+    /////
+    async  updaterefill(payload,res){
+        try{
+            let dba=await DbConnection.Get();
+            var dbo=dba.db("where");
+	    ////
+	    var tempbottle;
+	    var dat=new Date();
+	    var date = dat.getFullYear()+'-'+(dat.getMonth()+1)+'-'+dat.getDate();
+	    ///
+	    var myobj={"_id":ObjectId(payload._id)};
+	    ////
+	    /*
+	      dbo.collection("user").findOne(myobj,function(err, result){
+	      if (err) throw err;
+	      //res.json(result);
+	      tempbottle=await result;
+	      ////
+	      });
+	    */
+	    dbo.collection("bottle").find(payload).toArray(function(err, result){
+		    if (err) throw err;
+		    //tempbottle=result;
+		    //});
+		    //console.log(result.last_refill_day);
+		    res.json(result[0].last_refill_day);
+		    /*		    //result.forEach(last_refill_day => {
+			    console.log(typeof(last_refill_day));
+			    if(tempbottle.last_refill_day!=date)
+				{
+				    dbo.collection("bottle").updateOne({"_id":myobj},{$set:{"last_refill_day":date,"day_refills":1}},function(err, result){
+					    if (err) throw err;
+					    res.json("Day refills: "+ 1 +"Last day refill: "+ date);
+					});
+				}
+			    else
+				{
+				    dbo.collection("bottle").updateOne({"_id":myobj},{$set:{"day_refills":(tempbottle.day_refills+1)}},function(err, result){
+					    if (err) throw err;
+					    res.json("Day refills: "+ 1+"Last day refill: "+ date);
+					});
+				}
+				});*/
+		});
+	}catch(e){
+	    console.log('failed to delete bottle');
+	    console.log(e);
+	    return e;
+	}
+    }
+    
+    /////
+    async getbottle(payload,res){
+        try{
+            let dba=await DbConnection.Get();
+            var dbo=dba.db("where");
+            var address=payload.address;
+            var myobj={"_id":ObjectId(payload._id)};
+	    dbo.collection("bottle").find(myobj).toArray(function(err, result){
+                    if (err) throw err;
+                    res.json(result);
+                });
+        }catch(e){
+            console.log('failed to delete user');
+            console.log(e);
+            return e;
+        }
+    }
+    /////    
 };
 
 module.exports=CallHelper;
