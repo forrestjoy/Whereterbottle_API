@@ -58,7 +58,7 @@ class CallHelper{
 	    var lname=payload.last_name;
 	    var email=payload.email;
 	    var address=payload.address;
-	    var myobj={"first_name":fname,"last_name":lname,"bottle_id":[],"last_fill":"","favorites":[],"friends":[],"email":email,"address":address};
+	    var myobj={"first_name":fname,"last_name":lname,"bottle_id":"","last_fill":"","favorites":[],"friends":[],"email":email,"address":address};
 	    dbo.collection("user").insertOne(myobj, function(err, result) {
 		    if (err) throw err;
 		    console.log(result.insertedId);
@@ -197,7 +197,7 @@ class CallHelper{
             return e;
         }
     }    
-    /////
+    ////
     async removefavoritetouser(payload,res){
         try{
             let dba=await DbConnection.Get();//Check connection status & return singleton connection instance from server to D
@@ -298,7 +298,7 @@ class CallHelper{
 		    console.log("BOTTLE'S ID: " + result.insertedId);
 		    console.log(typeof(result.insertedId));
 		    bottle_id=result.insertedId;
-		    dbo.collection("user").updateOne({"_id":searchId},{"$push":{"bottle_id":bottle_id}},function(err, result){
+		    dbo.collection("user").updateOne({"_id":searchId},{"$set":{"bottle_id":bottle_id}},function(err, result){
 			    if (err) throw err;
 			    res.json("Your new bottle was added. It is: "+bottle_id);
 			});
@@ -317,12 +317,15 @@ class CallHelper{
             var dbo=dba.db("where");
 	    var address=payload.address;
 	    var myobj={"_id":ObjectId(payload._id)};
-
+	    var searchId=ObjectId(payload._uid);
 	    dbo.collection("bottle").deleteOne(myobj, function(err, obj) {
 		    if (err) throw err;
-		    console.log("1 document deleted");
-		    res.json('Account Successfully Deleted');
-
+		    console.log("1 document deleted from bottle collection");
+		    //res.json('Account Successfully Deleted');
+		    dbo.collection("user").updateOne({"_id":searchId},{"$set":{"bottle_id":""}},function(err, result){
+			    if (err) throw err;
+			    res.json("Bottle removed from user account");
+			});
 		});
         }catch(e){
             console.log('failed to delete bottle');
@@ -399,6 +402,116 @@ class CallHelper{
         }
     }
     /////    
-};
+    async updatecoord(payload,res){
+        try{
+            let dba=await DbConnection.Get();//Check connection status & return singleton connection instance from server to D
+	    var dbo=dba.db("where");//Establish the DB being used               
+	    //Search user collection for document matching information passed in the payload. If found send the result in json format back to the IP where t
+	    var searchId=ObjectId(payload._id);
+	    var x=payload.x_coord;
+	    var y=payload.y_coord;
+	    dbo.collection("bottle").updateOne({"_id":searchId},{"$set":{"x_coord":x,"y_coord":y}},function(err, result){
+		    if (err) throw err;
+		    res.json("your new x_coord: "+payload.x_coord+"your new y_coord: "+payload.y_coord);
+		});
+        }catch(e){
+            console.log('Failed to get user');
+            return e;
+        }
+    }    
 
+//////////////////////////////////////////////////////
+    
+/////
+    async  makefountain(payload,res){
+        try{
+            let dba=await DbConnection.Get();
+            var dbo=dba.db("where");
+	    var x_coord=payload.x_coord;
+	    var y_coord=payload.y_coord;
+	    var filter_status=payload.filter_status;
+	    var num_ratings=0;
+	    var coldness=payload.coldness;
+	    var myobj={"x_coord":x_coord,"y_coord":y_coord,"filter_staus":filter_status,"rating":"","num_ratings":num_ratings,"coldness":coldness};
+	    dbo.collection("fountain").insertOne(myobj, function(err, result) {
+		    if (err) throw err;
+		    console.log(result.insertedId);
+		    res.json(result.insertedId);
+		});
+        }catch(e){
+            console.log('failed to insert fountain');
+	    console.log(e);
+            return e;
+        }
+    }
+/////
+    async updatefilter(payload,res){
+        try{
+            let dba=await DbConnection.Get();//Check connection status & return singleton connection instance from server to D
+	    var dbo=dba.db("where");//Establish the DB being used               
+	    //Search user collection for document matching information passed in the payload. If found send the result in json format back to the IP where t
+	    var searchId=ObjectId(payload._id);
+	    var filter_status=payload.filter_status;
+	    dbo.collection("fountain").updateOne({"_id":searchId},{"$set":{"filter_status":filter_staus}},function(err, result){
+		    if (err) throw err;
+		    res.json("your new filter status:"+filter_status);
+		});
+        }catch(e){
+            console.log('Failed to get user');
+            return e;
+        }
+    }    
+
+    async updatecoldness(payload,res){
+        try{
+            let dba=await DbConnection.Get();//Check connection status & return singleton connection instance from server to D
+	    var dbo=dba.db("where");//Establish the DB being used               
+	    //Search user collection for document matching information passed in the payload. If found send the result in json format back to the IP where t
+	    var searchId=ObjectId(payload._id);
+	    var coldness=payload.coldness;
+	    dbo.collection("fountain").updateOne({"_id":searchId},{"$set":{"coldness":coldness}},function(err, result){
+		    if (err) throw err;
+		    res.json("your new coldness:"+coldness);
+		});
+        }catch(e){
+            console.log('Failed to get user');
+            return e;
+        }
+    }    
+
+    async updaterating(payload,res){
+        try{
+            let dba=await DbConnection.Get();//Check connection status & return singleton connection instance from server to D
+	    var dbo=dba.db("where");//Establish the DB being used               
+	    //Search user collection for document matching information passed in the payload. If found send the result in json format back to the IP where t
+	    //	    var searchId=ObjectId(payload._id);
+	    var user_rating=payload.rating;
+	    /*	    dbo.collection("fountain").updateOne({"_id":searchId},{"$set":{"coldness":coldness}},function(err, result){
+		    if (err) throw err;
+		    res.json("your new coldness:"+coldness);
+		});
+	    */
+            var myobj={"_id":ObjectId(payload._id)};
+	    dbo.collection("bottle").find(myobj).toArray(function(err, result){
+                    if (err) throw err;
+                    //res.json(result);
+		    var temprating=result[0].rating;
+		    var num_ratings=result[0].num_ratings+1;
+		    temprating=(temprating)/num_ratings;
+		    dbo.collection("user").updateOne({"_id":searchId},{"$set":{"rating":temprating,"num_ratings":num_ratings}},function(err, result){
+			    if (err) throw err;
+			    res.json("Updated rating: "+temprating=(temprating)/num_ratings);
+			});
+		});
+        }catch(e){
+            console.log('Failed to get user');
+            return e;
+        }
+    }
+};
+/*
+updaterating
+getpartial
+*/
+//////////////////
 module.exports=CallHelper;

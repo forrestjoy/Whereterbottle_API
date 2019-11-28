@@ -152,7 +152,7 @@ app.post("/updatecoord", (req, res, next) => {
 	console.log('body: ',req.body);
 	console.log('IP: '+clientIp);
 	payload=req.body;
-	connectionHelper.changeuseraddress(payload,res);
+	connectionHelper.updatecoord(payload,res);
     });
 
 /////******************

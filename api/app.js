@@ -52,7 +52,7 @@ app.post("/deleteuser", (req, res, next) => {
         console.log('IP: '+clientIp);
         payload=req.body;
         connectionHelper.deleteuser(payload,res);
-    });
+    });//DONE
 
 app.post("/updatefilltouser", (req, res, next) => {
         clientIp = requestIp.getClientIp(req);
@@ -60,7 +60,7 @@ app.post("/updatefilltouser", (req, res, next) => {
         console.log('IP: '+clientIp);
         payload=req.body;
         connectionHelper.updatefilltouser(payload,res);
-    });
+    });//NOT DONE
 
 app.post("/addfavoritetouser", (req, res, next) => {
         clientIp = requestIp.getClientIp(req);
@@ -68,7 +68,7 @@ app.post("/addfavoritetouser", (req, res, next) => {
         console.log('IP: '+clientIp);
         payload=req.body;
         connectionHelper.addfavoritetouser(payload,res);
-    });
+    });//DONE
 
 app.post("/removefavoritetouser", (req, res, next) => {
 	clientIp = requestIp.getClientIp(req);
@@ -76,7 +76,7 @@ app.post("/removefavoritetouser", (req, res, next) => {
 	console.log('IP: '+clientIp);
 	payload=req.body;
 	connectionHelper.removefavoritetouser(payload,res);
-    });
+    });//DONE
 
 app.post("/addfriendtouser", (req, res, next) => {
 	clientIp = requestIp.getClientIp(req);
@@ -84,7 +84,7 @@ app.post("/addfriendtouser", (req, res, next) => {
 	console.log('IP: '+clientIp);
 	payload=req.body;
 	connectionHelper.addfriendtouser(payload,res);
-    });
+    });//DONE
 
 app.post("/removefriendtouser", (req, res, next) => {
 	clientIp = requestIp.getClientIp(req);
@@ -92,7 +92,7 @@ app.post("/removefriendtouser", (req, res, next) => {
 	console.log('IP: '+clientIp);
 	payload=req.body;
 	connectionHelper.removefriendtouser(payload,res);
-    });
+    });//DONE
 
 app.post("/changeuseremail", (req, res, next) => {
 	clientIp = requestIp.getClientIp(req);
@@ -100,7 +100,7 @@ app.post("/changeuseremail", (req, res, next) => {
 	console.log('IP: '+clientIp);
 	payload=req.body;
 	connectionHelper.changeuseremail(payload,res);
-    });
+    });//DONE
 
 app.post("/changeuseraddress", (req, res, next) => {
 	clientIp = requestIp.getClientIp(req);
@@ -108,7 +108,7 @@ app.post("/changeuseraddress", (req, res, next) => {
 	console.log('IP: '+clientIp);
 	payload=req.body;
 	connectionHelper.changeuseraddress(payload,res);
-    });
+    });//DONE
 /////******************
 /*
 Bottle routes for accessing bottle collection helper fuctions which will query based on user defined criteria which will interact with individual bottles which belong to individual user
@@ -145,7 +145,7 @@ app.post("/updaterefill", (req, res, next) => {
 	console.log('IP: '+clientIp);
 	payload=req.body;
 	connectionHelper.updaterefill(payload,res);
-    });
+    });//NOT DONE
 
 app.post("/updatecoord", (req, res, next) => {
 	clientIp = requestIp.getClientIp(req);
@@ -153,7 +153,7 @@ app.post("/updatecoord", (req, res, next) => {
 	console.log('IP: '+clientIp);
 	payload=req.body;
 	connectionHelper.updatecoord(payload,res);
-    });
+    });//DONE
 
 /////******************
 /*
@@ -166,7 +166,7 @@ app.post("/makefountain", (req, res, next) => {
 	console.log('body: ',req.body);
 	console.log('IP: '+clientIp);
 	payload=req.body;
-	connectionHelper.changeuseraddress(payload,res);
+	connectionHelper.makefountain(payload,res);
     });
 
 app.post("/updatefilter", (req, res, next) => {
@@ -174,7 +174,7 @@ app.post("/updatefilter", (req, res, next) => {
 	console.log('body: ',req.body);
 	console.log('IP: '+clientIp);
 	payload=req.body;
-	connectionHelper.changeuseraddress(payload,res);
+	connectionHelper.updatefilter(payload,res);
     });
 
 app.post("/updaterating", (req, res, next) => {
@@ -182,7 +182,7 @@ app.post("/updaterating", (req, res, next) => {
 	console.log('body: ',req.body);
 	console.log('IP: '+clientIp);
 	payload=req.body;
-	connectionHelper.changeuseraddress(payload,res);
+	connectionHelper.updaterating(payload,res);
     });
 
 app.post("/updatecoldness", (req, res, next) => {
@@ -190,7 +190,7 @@ app.post("/updatecoldness", (req, res, next) => {
 	console.log('body: ',req.body);
 	console.log('IP: '+clientIp);
 	payload=req.body;
-	connectionHelper.changeuseraddress(payload,res);
+	connectionHelper.updatecoldness(payload,res);
     });
 
 app.post("/getpartial", (req, res, next) => {
@@ -198,7 +198,7 @@ app.post("/getpartial", (req, res, next) => {
 	console.log('body: ',req.body);
 	console.log('IP: '+clientIp);
 	payload=req.body;
-	connectionHelper.changeuseraddress(payload,res);
+	connectionHelper.getpartial(payload,res);
     });
 
 /////******************
