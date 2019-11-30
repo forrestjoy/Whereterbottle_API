@@ -449,7 +449,7 @@ class CallHelper{
 	    //Search user collection for document matching information passed in the payload. If found send the result in json format back to the IP where t
 	    var searchId=ObjectId(payload._id);
 	    var filter_status=payload.filter_status;
-	    dbo.collection("fountain").updateOne({"_id":searchId},{"$set":{"filter_status":filter_staus}},function(err, result){
+	    dbo.collection("fountain").updateOne({"_id":searchId},{"$set":{"filter_status":filter_status}},function(err, result){
 		    if (err) throw err;
 		    res.json("your new filter status:"+filter_status);
 		});
@@ -479,26 +479,15 @@ class CallHelper{
     async updaterating(payload,res){
         try{
             let dba=await DbConnection.Get();//Check connection status & return singleton connection instance from server to D
-	    var dbo=dba.db("where");//Establish the DB being used               
-	    //Search user collection for document matching information passed in the payload. If found send the result in json format back to the IP where t
-	    //	    var searchId=ObjectId(payload._id);
+	    var dbo=dba.db("where");//Establish the DB being used
 	    var user_rating=payload.rating;
-	    /*	    dbo.collection("fountain").updateOne({"_id":searchId},{"$set":{"coldness":coldness}},function(err, result){
+	    var num_ratings=payload.num_ratings;
+            var myobj=ObjectId(payload._id);
+	    dbo.collection("fountain").updateOne({"_id":myobj},{"$set":{"rating":user_rating,"num_ratings":num_ratings}},function(err, result){
 		    if (err) throw err;
-		    res.json("your new coldness:"+coldness);
-		});
-	    */
-            var myobj={"_id":ObjectId(payload._id)};
-	    dbo.collection("bottle").find(myobj).toArray(function(err, result){
-                    if (err) throw err;
-                    //res.json(result);
-		    var temprating=result[0].rating;
-		    var num_ratings=result[0].num_ratings+1;
-		    temprating=(temprating)/num_ratings;
-		    dbo.collection("user").updateOne({"_id":searchId},{"$set":{"rating":temprating,"num_ratings":num_ratings}},function(err, result){
-			    if (err) throw err;
-			    res.json("Updated rating: "+tempratin);
-			});
+		    res.json("Updated rating: "+user_rating);
+		    //console.log(result);
+		    //res.json(result[0]);
 		});
         }catch(e){
             console.log('Failed to get user');
