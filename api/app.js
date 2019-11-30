@@ -193,12 +193,12 @@ app.post("/updatecoldness", (req, res, next) => {
 	connectionHelper.updatecoldness(payload,res);
     });
 
-app.post("/getpartial", (req, res, next) => {
+app.post("/getfountains", (req, res, next) => {
 	clientIp = requestIp.getClientIp(req);
 	console.log('body: ',req.body);
 	console.log('IP: '+clientIp);
 	payload=req.body;
-	connectionHelper.getpartial(payload,res);
+	connectionHelper.getfountains(payload,res);
     });
 
 /////******************

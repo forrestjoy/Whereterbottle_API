@@ -508,6 +508,22 @@ class CallHelper{
             return e;
         }
     }
+    async getfountains(payload,res){
+        try{
+            let dba=await DbConnection.Get();//Check connection status & return singleton connection instance from server to D
+            var dbo=dba.db("where");//Establish the DB being used
+	    //Search user collection for document matching information passed in the payload. If found send the result in json format back to the IP where th
+	    var searchId=ObjectId(payload._id);
+	    dbo.collection("fountain").find(payload).toArray(function(err, result){
+		    if (err) throw err;
+		    res.json(result);
+		});
+	}catch(e){
+	    var errorstring=null;
+	    console.log('Failed to get fountains');
+	    return errorstring;
+	}
+    }
 };
 /*
 updaterating
