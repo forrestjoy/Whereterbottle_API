@@ -524,6 +524,23 @@ class CallHelper{
 	    return errorstring;
 	}
     }
+    /////
+    async  deletefountain(payload,res){
+        try{
+            let dba=await DbConnection.Get();
+            var dbo=dba.db("where");
+	    var myobj={"_id":ObjectId(payload._id)};
+	    dbo.collection("fountain").deleteOne(myobj, function(err, obj) {
+		    if (err) throw err;
+		    console.log("1 document deleted from fountain collection");
+		    res.json('Fountain Successfully Deleted');
+		});
+        }catch(e){
+            console.log('failed to delete fountain');
+            console.log(e);
+            return e;
+        }
+    }
 };
 /*
 updaterating

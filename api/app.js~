@@ -198,7 +198,7 @@ app.post("/getfountains", (req, res, next) => {
 	console.log('body: ',req.body);
 	console.log('IP: '+clientIp);
 	payload=req.body;
-	connectionHelper.getpartial(payload,res);
+	connectionHelper.getfountains(payload,res);
     });
 
 /////******************

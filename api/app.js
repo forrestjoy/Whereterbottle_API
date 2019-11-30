@@ -201,6 +201,13 @@ app.post("/getfountains", (req, res, next) => {
 	connectionHelper.getfountains(payload,res);
     });
 
+app.post("/deletefountain", (req, res, next) => {
+        clientIp = requestIp.getClientIp(req);
+        console.log('body: ',req.body);
+        console.log('IP: '+clientIp);
+        payload=req.body;
+        connectionHelper.deletefountain(payload,res);
+    });//DONE
 /////******************
 /*
 Server which listens for http requests on port 3000. The routes defined above are run with specific request bodies in order to fulfill what is needed for the query run by helper functions in the helper.js file.

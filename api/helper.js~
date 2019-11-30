@@ -508,7 +508,6 @@ class CallHelper{
             return e;
         }
     }
-};
     async getfountains(payload,res){
         try{
             let dba=await DbConnection.Get();//Check connection status & return singleton connection instance from server to D
@@ -525,6 +524,7 @@ class CallHelper{
 	    return errorstring;
 	}
     }
+};
 /*
 updaterating
 getpartial
