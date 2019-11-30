@@ -201,6 +201,14 @@ app.post("/getfountains", (req, res, next) => {
 	connectionHelper.getfountains(payload,res);
     });
 
+app.post("/getfountain", (req, res, next) => {
+	clientIp = requestIp.getClientIp(req);
+	console.log('body: ',req.body);
+	console.log('IP: '+clientIp);
+	payload=req.body;
+	connectionHelper.getfountain(payload,res);
+    });
+
 app.post("/deletefountain", (req, res, next) => {
         clientIp = requestIp.getClientIp(req);
         console.log('body: ',req.body);

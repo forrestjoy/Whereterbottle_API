@@ -336,8 +336,10 @@ class CallHelper{
     /////
     async  updaterefill(payload,res){
         try{
+	    console.log("FUCK");
             let dba=await DbConnection.Get();
             var dbo=dba.db("where");
+	    var tempbottle;
 	    ////
 	    var tempbottle;
 	    var dat=new Date();
@@ -345,37 +347,32 @@ class CallHelper{
 	    ///
 	    var myobj={"_id":ObjectId(payload._id)};
 	    ////
-	    /*
-	      dbo.collection("user").findOne(myobj,function(err, result){
-	      if (err) throw err;
-	      //res.json(result);
-	      tempbottle=await result;
-	      ////
-	      });
-	    */
+	    
 	    dbo.collection("bottle").find(payload).toArray(function(err, result){
 		    if (err) throw err;
 		    //tempbottle=result;
 		    //});
 		    //console.log(result.last_refill_day);
-		    res.json(result[0].last_refill_day);
-		    /*		    //result.forEach(last_refill_day => {
+		    //		    res.json(result[0].last_refill_day);
+		    tempbottle=result;
+		    tempbottle.forEach(last_refill_day => {
 			    console.log(typeof(last_refill_day));
 			    if(tempbottle.last_refill_day!=date)
 				{
-				    dbo.collection("bottle").updateOne({"_id":myobj},{$set:{"last_refill_day":date,"day_refills":1}},function(err, result){
+				    dbo.collection("bottle").updateOne({"_id":myobj},{$set:{"last_refill_day":date,"day_refills":1,"total_refills":(tempbottle.total_refills+1)}},function(err, result){
 					    if (err) throw err;
-					    res.json("Day refills: "+ 1 +"Last day refill: "+ date);
+					    console.log("Day refills: "+ 1 +"Last day refill: "+ date);
 					});
 				}
 			    else
 				{
-				    dbo.collection("bottle").updateOne({"_id":myobj},{$set:{"day_refills":(tempbottle.day_refills+1)}},function(err, result){
+				    dbo.collection("bottle").updateOne({"_id":myobj},{$set:{"day_refills":(tempbottle.day_refills+1),"total_refills":(tempbottle.total_refills+1)}},function(err, result){
 					    if (err) throw err;
-					    res.json("Day refills: "+ 1+"Last day refill: "+ date);
+					    console.log("Day refills: "+ 1+"Last day refill: "+ date);
 					});
 				}
-				});*/
+			    res.json("Refills updated");
+			});
 		});
 	}catch(e){
 	    console.log('failed to delete bottle');
@@ -508,6 +505,24 @@ class CallHelper{
             return e;
         }
     }
+    /////
+    async getfountain(payload,res){
+        try{
+            let dba=await DbConnection.Get();//Check connection status & return singleton connection instance from server to D
+            var dbo=dba.db("where");//Establish the DB being used
+	    //Search user collection for document matching information passed in the payload. If found send the result in json format back to the IP where th
+	    var searchId=ObjectId(payload._id);
+	    dbo.collection("fountain").find(searchId).toArray(function(err, result){
+		    if (err) throw err;
+		    res.json(result);
+		});
+	}catch(e){
+	    var errorstring=null;
+	    console.log('Failed to get fountains');
+	    return errorstring;
+	}
+    }
+    /////
     async getfountains(payload,res){
         try{
             let dba=await DbConnection.Get();//Check connection status & return singleton connection instance from server to D
